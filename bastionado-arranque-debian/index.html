@@ -1,0 +1,220 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Bastionado del Arranque en Debian</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="bastionado-arranque-debian"
+                  title="Bastionado del Arranque en Debian"
+                  environment="web"
+                  feedback-link="jperort689@g.educaand.es">
+    
+      <google-codelab-step label="Introducción" duration="5">
+        <p>En este apartado veremos como fortalecer la seguridad del proceso de arranque de un sistema Debian</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Preparación del Entorno" duration="8">
+        <p>Antes de comenzar con el bastionado de GRUB, es necesario verificar la instalación y crear copias de seguridad de la configuración actual.</p>
+<h2 is-upgraded>Objetivo</h2>
+<p>Asegurar que GRUB está correctamente instalado y proteger la configuración original mediante backups antes de realizar modificaciones.</p>
+<p>Negative : <strong>Importante</strong>: Realizar backups es una práctica de seguridad fundamental. Si algo falla durante el bastionado, podrás restaurar la configuración original.</p>
+<h2 is-upgraded>Paso 1: Verificar la versión de GRUB instalada</h2>
+<p>Primero, confirma que GRUB está instalado en el sistema.</p>
+<p>La salida mostrará la versión de GRUB instalada en tu sistema Debian.</p>
+<p class="image-container"><img alt="GRUB version " src="img\\922b65274acb570c.png"></p>
+<h2 is-upgraded>Paso 2: Crear backup del archivo de configuración principal</h2>
+<p>El archivo <code>/etc/default/grub</code> contiene la configuración principal de GRUB. Crearemos una copia de seguridad en caso de poder cometer cualquier tipo de fallo</p>
+<p><strong>Verificar que el backup se creó correctamente</strong>:</p>
+<p class="image-container"><img alt="Creacion Backup" src="img\\f7f9e317029b656.png"></p>
+<h2 is-upgraded>Paso 3: Crear backup del directorio de scripts de GRUB</h2>
+<p>El directorio <code>/etc/grub.d/</code> contiene scripts que generan el archivo de configuración final de GRUB.</p>
+<p class="image-container"><img alt="Creación Backup .d" src="img\\f04571195f581d4f.png"></p>
+<p>Deberías ver tanto <code>grub.d</code> como <code>grub.d.backup</code>.</p>
+<h2 is-upgraded>Paso 4: Visualizar la configuración actual de GRUB</h2>
+<p>Antes de realizar cambios, examina el contenido del archivo de configuración.</p>
+<p class="image-container"><img alt="Configuración GRUB" src="img\\826449ac57754f8f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Proteger GRUB con Contraseña" duration="12">
+        <p>La configuración de una contraseña en GRUB es la medida de seguridad más importante para proteger el gestor de arranque contra modificaciones no autorizadas.</p>
+<h2 is-upgraded>Objetivo</h2>
+<p>Establecer un superusuario con contraseña cifrada que sea requerido para editar entradas de arranque o acceder a la línea de comandos de GRUB.</p>
+<p>Negative : <strong>Advertencia</strong>: Guarda la contraseña en un lugar seguro. Sin ella, no podrás modificar las opciones de arranque desde el menú de GRUB.</p>
+<h2 is-upgraded>¿Por qué proteger GRUB con contraseña?</h2>
+<p>Sin protección, cualquier persona con acceso físico a la máquina puede:</p>
+<ul>
+<li>Editar las opciones de arranque presionando <code>e</code></li>
+<li>Añadir <code>init=/bin/bash</code> para obtener acceso root sin contraseña</li>
+<li>Acceder a la línea de comandos de GRUB presionando <code>c</code></li>
+<li>Modificar parámetros del kernel para deshabilitar seguridad</li>
+</ul>
+<p>La contraseña de GRUB evita todas estas vulnerabilidades.</p>
+<h2 is-upgraded>Paso 1: Generar el hash de la contraseña</h2>
+<p>GRUB utiliza el algoritmo PBKDF2 para cifrar las contraseñas. Nunca se almacenan en texto plano.</p>
+<p>Ejecuta el siguiente comando:</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Proteger GRUB con Contraseña" duration="12">
+        <p>La configuración de una contraseña en GRUB es la medida de seguridad más importante para proteger el gestor de arranque contra modificaciones no autorizadas.</p>
+<h2 is-upgraded>Objetivo</h2>
+<p>Establecer un superusuario con contraseña cifrada que sea requerido para editar entradas de arranque o acceder a la línea de comandos de GRUB.</p>
+<p>Negative : <strong>Advertencia</strong>: Guarda la contraseña en un lugar seguro. Sin ella, no podrás modificar las opciones de arranque desde el menú de GRUB.</p>
+<h2 is-upgraded>¿Por qué proteger GRUB con contraseña?</h2>
+<p>Sin protección, cualquier persona con acceso físico a la máquina puede:</p>
+<ul>
+<li>Editar las opciones de arranque presionando <code>e</code></li>
+<li>Añadir <code>init=/bin/bash</code> para obtener acceso root sin contraseña</li>
+<li>Acceder a la línea de comandos de GRUB presionando <code>c</code></li>
+<li>Modificar parámetros del kernel para deshabilitar seguridad</li>
+</ul>
+<p>La contraseña de GRUB evita todas estas vulnerabilidades.</p>
+<h2 is-upgraded>Paso 1: Generar el hash de la contraseña</h2>
+<p>GRUB utiliza el algoritmo PBKDF2 para cifrar las contraseñas. Nunca se almacenan en texto plano.</p>
+<p>Ejecuta el siguiente comando:</p>
+<p><strong>grub-mkpasswd-pbkdf2</strong></p>
+<p class="image-container"><img alt="Hash constraseña" src="img\\be327464d1452cbc.png"></p>
+<p><strong>Importante</strong>:</p>
+<ul>
+<li>Elige una contraseña fuerte (mínimo 8 caracteres, mayúsculas, minúsculas, números y símbolos)</li>
+<li><strong>Copia TODO el hash</strong> desde <code>grub.pbkdf2.sha512...</code> hasta el final</li>
+<li><strong>Anota tu contraseña</strong> en un lugar seguro</li>
+</ul>
+<p>Ejemplo de contraseña fuerte: <code>GrubSecure2025!</code></p>
+<p>Positive : <strong>Tip</strong>: Selecciona y copia el hash completo con el ratón antes de continuar. Lo necesitarás en el siguiente paso.</p>
+<h2 is-upgraded>Paso 2: Editar el archivo de configuración personalizada</h2>
+<p>Abre el archivo <code>/etc/grub.d/40_custom</code> con un editor de texto:</p>
+<p class="image-container"><img alt="Contenido del GRUB.d" src="img\\902b77fb6870547d.png"></p>
+<ul>
+<li><strong>Propósito:</strong> Este archivo sirve para que puedas <strong>añadir tus propias opciones personalizadas al menú</strong> (por ejemplo, para lanzar aplicaciones).</li>
+<li><strong>Instrucciones:</strong> Simplemente debes <strong>escribir las nuevas entradas</strong> que quieras añadir <strong>justo después de ese comentario</strong>.</li>
+<li><strong>Advertencia Importante:</strong> Te avisa que tengas <strong>mucho cuidado de NO modificar la línea que dice &#34;exec tail&#34;</strong> que (según el texto) se encuentra <em>antes</em> de ese comentario.</li>
+</ul>
+<h2 is-upgraded>En resumen</h2>
+<p>Es una sección del archivo donde puedes añadir tus propios lanzadores de aplicaciones de forma segura. La línea <code>exec tail</code> es fundamental para que el resto del menú se cargue correctamente, por lo que si la modificas o la borras, es muy probable que tu menú deje de funcionar.</p>
+<h2 is-upgraded>Paso 3: Añadir la configuración de contraseña</h2>
+<p>Al final del archivo, añade las siguientes líneas:</p>
+<p>cat » /etc/grub.d/40_custom « ‘EOF&#39; set superusers=&#34;admin&#34; <strong>password_pbkdf2 admin grub.pbkdf2.sha512.10000.</strong><img alt="Hash" src="img\\be327464d1452cbc.png"></p>
+<p><strong>Qué hace</strong>:</p>
+<ul>
+<li>Añade automáticamente las líneas al final del archivo</li>
+<li>Define <code>admin</code> como superusuario de GRUB</li>
+<li>Configura la contraseña cifrada usando tu hash</li>
+</ul>
+<h2 is-upgraded>Paso 4: Verificar el archivo editado</h2>
+<p>Confirma que los cambios se guardaron correctamente:</p>
+<p><strong>cat /etc/grub.d/40_custom</strong></p>
+<p>Deberías ver tu configuración de superusuario y contraseña al final del archivo.</p>
+<h2 is-upgraded>Paso 5: Aplicar los cambios actualizando GRUB</h2>
+<p>Para que la configuración tome efecto, regenera el archivo de configuración de GRUB:</p>
+<p><strong>update-grub</strong></p>
+<p>El comando <code>update-grub</code> lee los archivos en <code>/etc/grub.d/</code> y <code>/etc/default/grub</code> y genera el archivo final <code>/boot/grub/grub.cfg</code>.</p>
+<h2 is-upgraded>Paso 6: Verificar la configuración generada</h2>
+<p>Revisa que la contraseña se agregó correctamente al archivo de configuración final:</p>
+<p><strong>grep -A 2 &#34;superusers&#34; /boot/grub/grub.cfg</strong></p>
+<p><strong>set superusers=&#34;admin&#34;</strong></p>
+<p><strong>password_pbkdf2 admin grub.pbkdf2.sha512.10000.</strong><img alt="Hash" src="img\\be327464d1452cbc.png"></p>
+<p>Si ves estas líneas, la configuración es correcta.</p>
+<h2 is-upgraded>¿Qué sucede ahora?</h2>
+<p>Cuando reinicies el sistema:</p>
+<ul>
+<li>El menú de GRUB se mostrará normalmente</li>
+<li>Si intentas presionar <code>e</code> para editar una entrada, <strong>GRUB pedirá usuario y contraseña</strong></li>
+<li>Si intentas presionar <code>c</code> para acceder a la línea de comandos, <strong>también pedirá credenciales</strong></li>
+<li>Solo el superusuario configurado puede realizar modificaciones</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Proteger Edición y Endurecer Menú" duration="10">
+        <p>Tras configurar la contraseña en GRUB, se refuerza el menú para impedir modificaciones no autorizadas y reducir la superficie de ataque.</p>
+<h2 is-upgraded>Objetivo</h2>
+<ul>
+<li>Exigir autenticación para editar entradas (<code>e</code>) o abrir la consola (<code>c</code>)</li>
+<li>Deshabilitar el modo recuperación</li>
+<li>Ajustar el tiempo de espera del menú (timeout)</li>
+</ul>
+<h2 is-upgraded>Paso 1: Exigir autenticación en edición y consola</h2>
+<p>La protección por contraseña ya está activa si añadiste <code>set superusers</code> y <code>password_pbkdf2</code> en <code>/etc/grub.d/40_custom</code>. Solo es necesario regenerar y verificar.</p>
+<p>Actualizar los cambios</p>
+<p><strong>update-grub</strong></p>
+<p>Verificar que el superusuario y la contraseña están presentes en grub.cfg</p>
+<p><strong>grep -E ‘set superusers|password_pbkdf2&#39; /boot/grub/grub.cfg</strong></p>
+<p>Positive : <strong>Prueba</strong>: Tras reiniciar, al pulsar <code>e</code> (editar) o <code>c</code> (consola) GRUB debe pedir usuario y contraseña.</p>
+<h2 is-upgraded>Paso 2: Deshabilitar el modo recuperación</h2>
+<p>Evita las entradas &#34;recovery&#34; para no facilitar elevaciones de privilegios.</p>
+<p>Eliminar posibles definiciones previas <strong>sed -i ‘/^GRUB_DISABLE_RECOVERY/d&#39; /etc/default/grub</strong></p>
+<p>Deshabilitar modo recuperación <strong>echo ‘GRUB_DISABLE_RECOVERY=&#34;true&#34;&#39; » /etc/default/grub</strong></p>
+<p>Aplicar cambios <strong>update-grub</strong></p>
+<h2 is-upgraded>Paso 3: Ajustar el timeout del menú</h2>
+<p>Reduce el tiempo de exposición del menú y acelera el arranque.</p>
+<p><strong>sed -i ‘/^GRUB_TIMEOUT_STYLE/d&#39; /etc/default/grubsed -i ‘/^GRUB_TIMEOUT/d&#39; /etc/default/grubecho ‘GRUB_TIMEOUT=3&#39; » /etc/default/grub</strong></p>
+<h2 is-upgraded>Paso 4: Parámetros de seguridad del kernel</h2>
+<p>Añade parámetros de endurecimiento al kernel desde GRUB para mejorar la seguridad en tiempo de ejecución.</p>
+<p>Limpiar definiciones previas <strong>sed -i ‘/^GRUB_CMDLINE_LINUX_DEFAULT/d&#39; /etc/default/grub</strong></p>
+<p>Activar AppArmor, auditoría y protecciones de memoria echo ‘GRUB_CMDLINE_LINUX_DEFAULT=&#34;quiet apparmor=1 security=apparmor audit=1 page_poison=1 vsyscall=none slab_nomerge slub_debug=FZ init_on_alloc=1 init_on_free=1&#34;&#39; » /etc/default/grub</p>
+<p>Una vez hecho aplicamos los cambios</p>
+<p><strong>update-grub</strong></p>
+<p>Ver parámetros efectivos del kernel <strong>cat /proc/cmdline</strong></p>
+<h2 is-upgraded>Paso 5: Verificación rápida</h2>
+<p>Confirma que no hay entradas de recuperación y que el timeout está aplicado.</p>
+<p>Confirmar que no hay entradas de recuperación</p>
+<p><strong>grep -i recovery /boot/grub/grub.cfg || echo &#34;Recovery deshabilitado&#34;</strong></p>
+<p>Confirmar el timeout efectivo en grub.cfg</p>
+<p><strong>grep -E ‘^set timeout=&#39; /boot/grub/grub.cfg</strong></p>
+<h2 is-upgraded>Paso 6: Pruebas funcionales</h2>
+<ol type="1">
+<li>Reinicia el sistema.</li>
+<li>En el menú de GRUB, intenta: <ul>
+<li>Pulsar <code>e</code> para editar una entrada → debe pedir usuario y contraseña.</li>
+<li>Pulsar <code>c</code> para abrir la consola → debe pedir usuario y contraseña.</li>
+</ul>
+</li>
+<li>Arranca normalmente y confirma que el sistema inicia sin errores.</li>
+</ol>
+<h2 is-upgraded>Paso 7: Reversión rápida (si algo falla)</h2>
+<p>Si tras aplicar cambios algo no funciona como esperas:</p>
+<p>Restaurar configuración original si hiciste backups previos</p>
+<p><strong>cp /etc/default/grub.backup /etc/default/grub 2&gt;/dev/null || true</strong><em>cp -r /etc/grub.d.backup/ /etc/grub.d/ 2&gt;/dev/null || true</em>*</p>
+<p>Regenerar configuración</p>
+<p><strong>update-grub</strong></p>
+<p>Reiniciar</p>
+<p><strong>reboot</strong></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
