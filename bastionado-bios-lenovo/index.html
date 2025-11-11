@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>BIOS/UEFI de un dispositvo lenovo</title>
+  <title>Guía de Bastionado de BIOS/UEFI: Lenovo</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
@@ -23,301 +23,108 @@
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid=""
                   id="bastionado-bios-lenovo"
-                  title="BIOS/UEFI de un dispositvo lenovo"
+                  title="Guía de Bastionado de BIOS/UEFI: Lenovo"
                   environment="web"
-                  feedback-link="">
+                  feedback-link="jperrot689@g.educaand.es">
     
-      <google-codelab-step label="Acceder a la BIOS" duration="5">
-        <p>Para llegar hasta esta pantalla podemos hacerlo de dos maneras una muy poco comúnm y la otra forma de poder acceder es reiniciando el portatil y puslar la tecla <strong><code>F2</code></strong> justo cuando aparecía el logo de Lenovo, la otra forma es si estuvieras desde el escritorio de tu portatil abrir el siguiente comando <strong><code>shutdown /r /fw</code></strong>, cada comando hace lo siguiente.</p>
-<p>El primero que es shutdown inicia el proceso de apago de nuestro portátil, en segundo lugar /r donde le estamos pidiendo que reinicie el sistema en vez de apagarlo y por ultimo /fw el cual accede a la BIOS/UEFI de nuestra máquina.s</p>
-<p>En otros equipos, la tecla podría ser <code>Del</code>, <code>F1</code> o <code>F12</code>.</p>
+      <google-codelab-step label="1. Introducción" duration="1">
+        <p>El <strong>bastionado</strong> (del inglés <em>hardening</em>) de un sistema informático es el proceso de reforzar su seguridad para reducir la superficie de ataque y minimizar la exposición a amenazas. Uno de los componentes más críticos y a la vez más olvidados en este proceso es la <strong>BIOS</strong> (Basic Input/Output System) o su sucesor moderno, <strong>UEFI</strong> (Unified Extensible Firmware Interface).</p>
+<p>La BIOS/UEFI es el firmware que se inicia antes que el sistema operativo. Controla el arranque del hardware y establece las reglas fundamentales sobre cómo puede iniciarse el dispositivo. Si un atacante logra comprometer la BIOS, puede obtener un control persistente y profundo sobre el sistema, siendo capaz de eludir la seguridad del propio sistema operativo.</p>
+<p>En esta guía, seguiremos un procedimiento detallado para bastionar la BIOS/UEFI de un portátil <strong>Lenovo 13w 2-in-1 Gen 3</strong>. El objetivo es configurar el firmware para cumplir con los estándares más altos de seguridad, basándonos en la rúbrica de evaluación del <strong>Criterio 6a</strong>: &#34;Se ha configurado la BIOS para incrementar la seguridad del dispositivo y su contenido minimizando las probabilidades de exposición a ataques&#34;.</p>
+<p>Se explicará paso a paso cómo configurar contraseñas críticas, deshabilitar vectores de ataque comunes (como el arranque desde dispositivos externos) y establecer un orden de arranque seguro, utilizando el simulador gráfico proporcionado por Lenovo.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="La Pestaña Main" duration="0">
-        <p>La primera pantalla que nos recibe es la pestaña <code>Main</code>.</p>
-<p class="image-container"><img alt="Pantalla Principal de la BIOS" src="img\\f5e5867c7258368c.png"></p>
-<p>Esta pestaña es, básicamente, el &#34;mostrador de información&#34; de mi equipo. Aquí no se puede modificar nada, pero es <strong>fundamental</strong> para nuestro bastionado por dos motivos:</p>
+      <google-codelab-step label="2. Guía de Bastionado: Pasos de Configuración" duration="1">
+        <h2 is-upgraded>2.1. Indicador: Contraseña de usuario o Power-On</h2>
+<p><strong>Objetivo:</strong> Configurar la contraseña de usuario. En este simulador, esta contraseña (User Password) actúa como la contraseña de encendido (Power-On), impidiendo que un usuario no autorizado inicie el sistema operativo.</p>
+<p><strong>Procedimiento en el simulador:</strong></p>
 <ol type="1">
-<li><strong>Identificamos el equipo</strong>: Vemos el <code>Product Name</code> (Lenovo 100w Gen 5) y el <code>Machine Type Model</code> (83LD).</li>
-<li><strong>Revisamos el firmware</strong>: La <code>UEFI BIOS Version</code> es <strong>QHCNXXWW</strong> (con fecha de 2025-02-27). La version de la BIOS/UEFI es necesaria en caso de necesitar cualquier actualización.</li>
-<li><strong>Primer chequeo de seguridad</strong>: En donde encontramos <code>UEFI Secure Boot</code> y marca <code>Enabled</code> el cual deberia de estar siempre activo.</li>
+<li>Desde el menú principal, navega a la pestaña <strong>Security</strong>.<img alt="Security" src="img\\1a6a4a288ab04016.png"></li>
+<li>Selecciona la primera opción de ese menú: <strong>Password</strong>. Al pulsar &#34;Enter&#34;, accederás al submenú de contraseñas.<img alt="Password" src="img\\68f0cd57addc514d.png"></li>
+<li>Selecciona la opción <strong>Set User Password</strong> y pulsa &#34;Enter&#34;.</li>
+<li>Introduce una contraseña robusta (ej. &#34;user123&#34;) y confírmala.</li>
+<li>Ahora verás que el campo <code>User Password</code> ha cambiado de <code>Not Set</code> a <code>Set</code>.</li>
 </ol>
-<p>Una vez visto el Main nos movemos a la siguiente pestaña que es <code>Config</code></p>
+<h2 is-upgraded>2.2. Indicador: Contraseña de administrador</h2>
+<p><strong>Objetivo:</strong> Configurar la contraseña de Supervisor. Esta es la &#34;Contraseña de administrador&#34; real, ya que protege el acceso a la configuración de la BIOS/UEFI. Sin ella, nadie puede modificar los ajustes de seguridad.</p>
+<p><strong>Procedimiento en el simulador:</strong></p>
+<ol type="1">
+<li>Permanece en el mismo submenú <strong>Password</strong> (donde establertaste la <code>User Password</code>).</li>
+<li>Selecciona la opción <strong>Set Supervisor Password</strong> y pulsa &#34;Enter&#34;.</li>
+<li>Introduce una contraseña de administrador robusta (ej. &#34;admin123&#34;) y confírmala.</li>
+<li>El campo <code>Supervisor Password</code> cambiará de <code>Not Set</code> a <code>Set</code>.</li>
+<li><strong>(Paso adicional para máxima seguridad):</strong> En esta misma pantalla, localiza <strong>Set Strong Password</strong>. Cámbialo de <code>[Disabled]</code> a <strong><code>[Enabled]</code></strong>.</li>
+</ol>
+<h2 is-upgraded>2.3. Indicador: Arranques externos</h2>
+<p><strong>Objetivo:</strong> Evitar que el sistema pueda arrancar desde dispositivos no autorizados, como memorias USB o a través de la red (PXE). Este es un vector de ataque muy común.</p>
+<p><strong>Procedimiento en el simulador:</strong></p>
+<ol type="1">
+<li>En la barra lateral izquierda, navega y selecciona la pestaña <strong>Startup</strong>. Al entrar, verás esta pantalla de configuración:<img alt="Startup" src="img\\51ba9b83c7b6f899.png"></li>
+<li>En esta pantalla, selecciona <strong><code>USB Boot</code></strong> y pulsa &#34;Enter&#34;.</li>
+<li>Cambia el valor de <code>[Enabled]</code> a <strong><code>[Disabled]</code></strong>.</li>
+<li>Vuelve a la pantalla de <code>Startup</code>, selecciona <strong><code>PXE Boot to LAN</code></strong> y pulsa &#34;Enter&#34;.</li>
+<li>Cambia el valor de <code>[Enabled]</code> a <strong><code>[Disabled]</code></strong>.</li>
+</ol>
+<h2 is-upgraded>2.4. Indicador: Orden de arranque</h2>
+<p><strong>Objetivo:</strong> Establecer un orden de arranque seguro, asegurando que el sistema <em>solo</em> intente arrancar desde el disco duro interno principal donde reside el sistema operativo.</p>
+<p><strong>Procedimiento en el simulador:</strong></p>
+<ol type="1">
+<li>Permanece en la misma pestaña <strong>Startup</strong> (la que se muestra en tu imagen <code>Startup</code>).</li>
+<li>Selecciona la opción <strong>Boot Order</strong> (visible en la parte inferior de la captura <code>Startup</code>) y pulsa &#34;Enter&#34;.</li>
+<li>Accederás a una lista de dispositivos de arranque. El objetivo es que el <strong>disco duro principal</strong> (identificado como <code>NVMe0</code>, <code>HDD0</code>, <code>Windows Boot Manager</code> o similar) sea la <strong>primera y única</strong> opción habilitada.</li>
+<li>Usando las teclas indicadas en pantalla (generalmente <code>+</code> y <code>-</code> o <code>F5</code>/<code>F6</code> para mover), <strong>mueve</strong> el disco duro principal a la <strong>posición 1</strong>.</li>
+<li><strong>Deshabilita</strong> o <strong>excluye</strong> (a menudo con la tecla <code>X</code> o <code>!</code>) todas las demás opciones de arranque (como <code>USB FDD</code>, <code>USB HDD</code>, <code>Legacy LAN</code>, <code>PXE</code>, etc.) que deshabilitamos en el paso anterior. No basta con solo bajar su prioridad, deben ser eliminadas de la lista de arranque activo.</li>
+</ol>
+<h2 is-upgraded>2.5. Indicador: Otras opciones de seguridad</h2>
+<p><strong>Objetivo:</strong> Configurar un conjunto de defensas avanzadas a nivel de firmware para completar el bastionado. Esto incluye habilitar el arranque seguro, la virtualización para la seguridad del SO y el bloqueo de puertos I/O.</p>
+<p><strong>Procedimiento en el simulador:</strong></p>
+<ol type="1">
+<li>Navega de vuelta al menú principal de <strong>Security</strong> (el que se muestra en tu captura <code>Security</code>).</li>
+<li><strong>Habilitar Secure Boot:</strong><ul>
+<li>Selecciona la opción <strong>Secure Boot</strong> y pulsa &#34;Enter&#34;.</li>
+<li>En el submenú, asegúrate de que la opción <code>Secure Boot</code> esté configurada en <strong><code>[Enabled]</code></strong>.</li>
+<li><em>Explicación:</em> Esto es crítico. Secure Boot asegura que el sistema solo pueda arrancar cargadores de sistema operativo y controladores que estén firmados digitalmente por una autoridad de confianza (ej. Microsoft). Previene eficazmente los rootkits de arranque.<img alt="Secure Boot" src="img\\c946318b5f3e5d6c.png"></li>
+</ul>
+</li>
+<li><strong>Habilitar Virtualización:</strong><ul>
+<li>Vuelve al menú <code>Security</code> y selecciona <strong>Virtualization</strong>.</li>
+<li>Asegúrate de que <code>Intel(R) Virtualization Technology</code> (o AMD-V) esté en <strong><code>[Enabled]</code></strong>.</li>
+<li><em>Explicación:</em> Habilitar la virtualización a nivel de BIOS es un requisito indispensable para las características de seguridad modernas de Windows 11, como <em>Credential Guard</em> y <em>VBS (Seguridad Basada en Virtualización)</em>, que aíslan procesos críticos del sistema.<img alt="Virtualización" src="img\\1a0b40cde5937ae0.png"></li>
+</ul>
+</li>
+<li><strong>Bloquear Puertos I/O (Opcional pero recomendado):</strong><ul>
+<li>Vuelve al menú <code>Security</code> y selecciona <strong>I/O Port Access</strong>.</li>
+<li>Aquí puedes deshabilitar a nivel de firmware cualquier puerto que no sea necesario para la operativa del dispositivo.</li>
+<li>Ejemplo: Si el portátil no va a usar la ranura para tarjetas, selecciona <code>USB Port</code> y cámbialo a <strong><code>[Disabled]</code></strong>.</li>
+<li><em>Explicación:</em> Deshabilitar puertos I/O innecesarios reduce la superficie de ataque físico contra dispositivos maliciosos (como <code>BadUSB</code> o <code>Rubber Ducky</code>).<img alt="I/O Port Access" src="img\\68b9232060e5d3ca.png"></li>
+</ul>
+</li>
+</ol>
+<h2 is-upgraded>2.6. Paso Final: Guardar Cambios y Salir</h2>
+<p>Toda esta configuración se perderá si no se guarda correctamente al salir de la BIOS.</p>
+<ol type="1">
+<li>Navega a la pestaña <strong>Restart</strong> en la barra lateral izquierda.</li>
+<li>Selecciona la opción <strong>Exit Saving Changes</strong>.</li>
+<li>Alternativamente, puedes pulsar la tecla <strong>F10</strong> (Save and Exit) como se indica en la parte inferior de la pantalla.</li>
+<li>El sistema mostrará un cuadro de confirmación (<code>Save configuration changes and exit now?</code>).</li>
+<li>Selecciona <strong><code>Yes</code></strong> y pulsa &#34;Enter&#34;. El sistema se reiniciará con todas las medidas de seguridad aplicadas.<img alt="Save Changes and Restart" src="img\\aafc15f8f9e1193d.png"></li>
+</ol>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="La Pestaña Config" duration="10">
-        <p>Una vez finalizado con <code>Main</code> nos movemos a <code>Config</code>.</p>
-<p>Esta pestaña es un menú que nos da acceso a varias áreas del hardware:</p>
-<p class="image-container"><img alt="Menú de Configuración de la BIOS" src="img\\3bf8d99e516c122d.png"></p>
-<p>En este apartado tenemos 5 sub-secciones que son:</p>
+      <google-codelab-step label="3. Conclusión" duration="0">
+        <p>Siguiendo los pasos detallados en esta guía, hemos realizado un bastionado completo de la BIOS/UEFI del portátil Lenovo 13w 2-in-1 Gen 3, cumpliendo con todos los requisitos para la máxima puntuación (Bien - 2pt) del Criterio 6a.</p>
+<p>Hemos establecido con éxito:</p>
 <ul>
-<li><strong><code>Network</code></strong>: Opciones de la tarjeta de red.</li>
-<li><strong><code>USB</code></strong>: Control sobre los puertos USB.</li>
-<li><strong><code>Keyboard</code></strong>: Opciones del teclado.</li>
-<li><strong><code>Power</code></strong>: Gestión de la energía.</li>
-<li><strong><code>CPU</code></strong>: Configuración del procesador.</li>
+<li><strong>Contraseñas de Supervisor (Administrador) y de Usuario (Power-On)</strong> para proteger el acceso al firmware y al arranque del equipo.</li>
+<li>La <strong>deshabilitación de arranques externos (USB y PXE)</strong> para eliminar vectores de ataque comunes.</li>
+<li>Un <strong>orden de arranque seguro</strong> que prioriza únicamente el disco del sistema operativo.</li>
+<li>La activación de <strong>defensas avanzadas de firmware (Secure Boot y Virtualización)</strong>, fundamentales para la seguridad del sistema operativo moderno.</li>
 </ul>
-<p>Una vez visto vamos a ir por cada una de las sub-secciones para comentar que podemos hacer en cada una de estas.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Config: Network" duration="0">
-        <p>Aquí entramos en el primer apartado de <code>Config</code>. Estas son las opciones de red:</p>
-<p class="image-container"><img alt="Opciones de Red" src="img\\fc430f54c338a68c.png"></p>
-<p>Vemos dos opciones, ambas cruciales para el bastionado físico y de red:</p>
-<ol type="1">
-<li><strong><code>MAC Address Pass Through</code></strong>: [Estado Actual: <code>Disabled</code>]<ul>
-<li><strong>Qué es</strong>: Una función corporativa que permite que la dirección MAC de un <em>dock</em> (estación de trabajo) reemplace a la del portátil.</li>
-<li><strong>Bastionado</strong>: Para nuestro propósito (un servidor seguro o un equipo personal), esto es irrelevante y debe estar <strong><code>Disabled</code></strong>. Si estuviera activado, podría usarse para suplantar la identidad de red del equipo. Lo dejamos como está.</li>
-</ul>
-</li>
-<li><strong><code>Wake On LAN from Dock</code></strong>: [Estado Actual: <code>Disabled</code>]<ul>
-<li><strong>Qué es</strong>: La capacidad de &#34;despertar&#34; (encender) el portátil de forma remota enviando un paquete de red a través del <em>dock</em>.</li>
-<li><strong>Bastionado</strong>: ¡Aquí sí hay chicha! Un atacante en nuestra red podría enviar este paquete para encender el equipo y atacarlo cuando no estamos mirando.</li>
-</ul>
-</li>
-</ol>
-<p>Ambas opciones ya están en <code>Disabled</code>, que es la configuración más segura. No permitimos que el equipo se encienda remotamente ni que se manipule su dirección MAC.</p>
-<p>En este caso no tenemos que tocar nada, pasemos a la siguiente sub-sección.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Config: USB" duration="3">
-        <p>Accedemos al apartado del USB.</p>
-<p>Cambiar de <strong>Enable</strong> a <strong>disabled</strong></p>
-<p class="image-container"><img alt="Opciones de USB" src="img\\f779d33477aacc5d.png"></p>
-<p>Cambio hecho a <strong>Disabled</strong></p>
-<p class="image-container"><img alt="Opciones de USB" src="img\\75e499e2f46a22af.png"></p>
-<ol type="1">
-<li><strong><code>Always On USB</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Qué hace</strong>: Permite que los puertos USB den energía mientras el portátil está apagado (pero conectado a la corriente).</li>
-<li><strong>Bastionado</strong>:Esto puede ser un vector para ataques de hardware como &#34;USB Killers&#34; o dispositivos maliciosos que se alimentan solos.</li>
-</ul>
-</li>
-<li><strong><code>Charge in Battery Mode</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Qué hace</strong>: Lo mismo, pero tirando de batería. Aún peor.</li>
-<li><strong>Bastionado</strong>: Misma razón y encima gasta batería.</li>
-</ul>
-</li>
-</ol>
-<ul>
-<li>Cambia <strong><code>Always On USB</code></strong> a <strong><code>Disabled</code></strong>.</li>
-<li>Cambia <strong><code>Charge in Battery Mode</code></strong> a <strong><code>Disabled</code></strong>.</li>
-</ul>
-<p>En este caso si teniamos que hacer cambios para no permitir ningun tipo de ataque físico como ya hemos dicho anteriormente. Después de estos cambios de configuración pasamos a la siguiente sub-sección.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Config: Keyboard" duration="1">
-        <p>Accedemos al apartado del Keyboard</p>
-<p class="image-container"><img alt="Opciones de Teclado" src="img\\3732355e6a9e2b90.png"></p>
-<p>Tenemos dos opciones que definen cómo se comportan las teclas de función:</p>
-<p>1.<strong><code>F1-F12 as Primary Function</code></strong>: [Estado Actual: <code>Disabled</code>] <strong>Qué es</strong>: Esto decide qué pasa cuando pulsas una tecla F (F1, F2, etc.). Estando <code>Disabled</code>, la función primaria es la del &#34;dibujito&#34; (bajar volumen, brillo, modo avión). Para usar <code>F5</code> (actualizar), tendrías que pulsar <code>Fn + F5</code>. * <strong>Bastionado</strong>: Irrelevante para la seguridad. Es pura preferencia del usuario. Si vas a usar mucho la terminal o aplicaciones que dependen de las teclas F, querrás ponerlo en <code>Enabled</code>.</p>
-<p>2.<strong><code>Fool Proof Fn Ctrl</code></strong>: [Estado Actual: <code>Enabled</code>] <strong>Qué es</strong>: Estando <code>Enabled</code> <em>evita</em> que el usuario active el <em>&#34;Fn Lock&#34;</em> (<code>Fn + Esc</code>), que es lo que intercambia las funciones primarias y secundarias de las teclas F sobre la marcha. Esto puede ser el vez de usar  la tecla <em>F5</em> para actualizar deberiamos de usar <em>F5 + Fn</em> para poder actualizar en vez de cambiar la iluminación del teclado. <strong>Bastionado</strong>: Solo sirve para evitar que un usuario cambie accidentalmente el comportamiento del teclado. En cuanto a seguridad no hay ningún tipo de problema.</p>
-<p>Como ninguna de estas opciones afecta a la superficie de ataque del sistema, no se requiere ningún cambio. Lo documentamos y seguimos.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Config: Power" duration="2">
-        <p>Siguiente parada, <code>Power</code>. Aquí hay que leer con atención, porque una de las opciones no es un ajuste, sino un comando de mantenimiento.</p>
-<p class="image-container"><img alt="Opciones de Power" src="img\\1330bca9bc5367c1.png"></p>
-<p>Vamos a analizar qué vemos:</p>
-<ol type="1">
-<li><strong><code>Disable Built-in Battery</code></strong>:<ul>
-<li><strong>Qué es</strong>: Si pulsas <code>Enter</code> la BIOS desconecta la batería a nivel de hardware. Está pensado para que un técnico pueda abrir el portátil de forma segura sin provocar un cortocircuito.</li>
-<li><strong>Bastionado</strong>: No es necesario tocar la bateria ya que estamos con la configuracion y no tenemos que abrir el portátil</li>
-</ul>
-</li>
-<li><strong><code>One Key Battery</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Qué es</strong>: Esta es una función específica de Lenovo, probablemente ligada a su software &#34;One Key&#34;. Suele permitir que la batería alimente alguna función (como un botón de recuperación) incluso con el equipo apagado.</li>
-<li><strong>Bastionado</strong>: Esto sigue la misma lógica que <code>Always On USB</code>. No queremos que &#34;nada&#34; tenga energía o esté &#34;escuchando&#34; cuando el sistema está apagado. Es una superficie de ataque innecesaria.</li>
-</ul>
-</li>
-</ol>
-<p>Podemos desconectarlo ya que no es esencial.</p>
-<p>Pasamos a la última sub-sección del apartado de &#34;Config&#34;.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Config: CPU" duration="3">
-        <p>Llegamos al último apartado de <code>Config</code>: el cerebro de la bestia, la CPU. Y aquí nos encontramos con una de las decisiones de bastionado más clásicas (y polémicas).</p>
-<p class="image-container"><img alt="Opciones de CPU" src="img\\80e0a1d3dcf36472.png"></p>
-<p>Solo hay una opción, pero es una muy importante:</p>
-<ol type="1">
-<li><strong><code>Intel(R) Hyper-Threading Technology</code></strong>: [Estado Actual: <code>Enabled</code>] <ul>
-<li><strong>Qué es</strong>: Es la tecnología de Intel que hace que un solo núcleo físico de la CPU pueda comportarse como dos núcleos lógicos (hilos). En resumen: <code>Enabled</code> = más rendimiento multitarea. <code>Disabled</code> = un núcleo físico.</li>
-<li><strong>Bastionado</strong>: El Hyper-Threading ha sido históricamente la fuente de varias vulnerabilidades de seguridad graves (como MDS, Zombieload...). Estas vulnerabilidades, en teoría, podían permitir a un proceso malicioso &#34;espiar&#34; datos de otro proceso que se esté ejecutando en el hilo &#34;hermano&#34; (el que comparte el mismo núcleo físico).</li>
-</ul>
-</li>
-</ol>
-<p>En un entorno de máxima seguridad (hardening), la regla es clara: <strong>la seguridad está por encima del rendimiento</strong>. Deshabilitar el Hyper-Threading cierra la puerta a toda esa familia de vulnerabilidades de canal lateral.</p>
-<ul>
-<li>Cambiamos <strong><code>Intel(R) Hyper-Threading Technology</code></strong> a <strong><code>Disabled</code></strong>.</li>
-</ul>
-<p>Una vez finalizado con el apartado de &#34;Config&#34; accedemos a &#34;Date/Time&#34;.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Date/Time" duration="2">
-        <p class="image-container"><img alt="Opciones de Fecha y Hora" src="img\\1b01ff779b9c28a7.png"></p>
-<p>Nos encontramos en un apartado en donde vemos la fecha y hora.</p>
-<ol type="1">
-<li><strong><code>System Date</code></strong>: [Valor Actual: November 05, 2025]</li>
-<li><strong><code>System Time</code></strong>: [Valor Actual: 23:53:55]</li>
-</ol>
-<p><strong>¿Por qué esto es seguridad?</strong> Toda la criptografía (cifrado, certificados SSL/TLS, firmas de código) depende de marcas de tiempo. Si la hora de nuestra BIOS estuviese mal como por ejemplo 5 de Noviembre de 2001 el sistema operativo no podria hacer ningún tipo de actualización  y los logs de seguridad serían &#34;inservibles&#34; ya que no se encuentra en la fecha actual.</p>
-<p><strong>Necesita una acción de bastioanado</strong> Debemos de asegurarnos de que la fecha (<code>System Date</code>) y la hora (<code>System Time</code>) son <strong>exactas</strong> para nuestra zona horaria como por ejemplo si viviesemos en España deberiamos de poner la fecha y hora.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Paso 4: La Pestaña ‘Security&#39;" duration="2">
-        <p>Accedemos a una parte importante dentro de nuestra BIOS/UEFI que es <strong>Security</strong></p>
-<p class="image-container"><img alt="Menú de Seguridad de la BIOS" src="img\\1a6a4a288ab04016.png"></p>
-<p>Este es, sin duda, el apartado más importante de toda la BIOS. Aquí es donde pondremos las barreras de entrada. Como ves, hay <em>mucho</em> que revisar. Este es el plan de ataque:</p>
-<ul>
-<li><strong><code>Password</code></strong>: Sirve para estableces las contraseñas de la BIOS.</li>
-<li><strong><code>Security Chip</code></strong>: Configuraremos el chip TPM (Trusted Platform Module).</li>
-<li><strong><code>UEFI BIOS Update Option</code></strong>: Un apartado muy importante en el cual decidimos quien puede actualizar la BIOS.</li>
-<li><strong><code>Virtualization</code></strong>: Activaremos las funciones de virtualización.</li>
-<li><strong><code>I/O Port Access</code></strong>: Deshabilitaremos que no estemos o no vayamos a usar.</li>
-<li><strong><code>Absolute Persistence(R) Module</code></strong>: Desactivaremos un posible &#34;agujero de seguridad legal&#34;.</li>
-<li><strong><code>Secure Boot</code></strong>:En pocas palabras el arranque seguro el cual solo usará software firmado y certificado por un proveedor de confianza.</li>
-<li><strong><code>Secure Wipe</code></strong>: Una herramienta para borrar discos de forma segura.</li>
-<li><strong><code>Reset system to Factory Defaults</code></strong>: En caso necesario resetar el sistema al completo.</li>
-</ul>
-<p>En los siguientes apartados veremos como &#34;reforzar nuestro castillo&#34;.</p>
-<p>Empezamos por la primera línea de defensa.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Paso 4.1: Security - Password" duration="5">
-        <p>Ingresamos al primer apartado de <code>Security</code>. Esta sección es la línea de defensa fundamental contra el acceso físico no autorizado al firmware del sistema.</p>
-<p class="image-container"><img alt="Opciones de Contraseña de BIOS" src="img\\68f0cd57addc514d.png"></p>
-<p>Analicemos las opciones y su estado actual:</p>
-<ol type="1">
-<li><strong><code>Supervisor Password</code></strong>: [Estado Actual: <code>Not Set</code>]<ul>
-<li><strong>Descripción</strong>: Esta es la contraseña de administrador de la BIOS. Si se establece, se requerirá para realizar <em>cualquier</em> cambio en la configuración de la BIOS (como los que estamos haciendo ahora).</li>
-<li><strong>Bastionado</strong>: Es <strong>obligatorio</strong> establecer esta contraseña. Sin ella, cualquier persona con acceso físico puede revertir todas nuestras configuraciones de seguridad.</li>
-</ul>
-</li>
-<li><strong><code>User Password</code></strong>: [Estado Actual: <code>Not Set</code>]<ul>
-<li><strong>Descripción</strong>: Esta contraseña (también conocida como &#34;Power-On Password&#34;) se solicita al usuario cada vez que se enciende el equipo, <em>antes</em> de que cargue el sistema operativo.</li>
-<li><strong>Bastionado</strong>: Altamente recomendado. Añade una capa de autenticación previa al arranque.</li>
-</ul>
-</li>
-<li><strong><code>HDD Password</code></strong>: [Estado Actual: <code>Not Set</code>]<ul>
-<li><strong>Descripción</strong>: Esto establece una contraseña en el firmware del disco duro (si es compatible, como los HDD/SSD SATA). Esta contraseña es independiente del cifrado del sistema operativo (como LUKS o BitLocker).</li>
-<li><strong>Bastionado</strong>: Recomendado como una capa adicional, aunque el cifrado de disco a nivel de SO (que veremos en el proyecto de Ubuntu) es más robusto.</li>
-</ul>
-</li>
-<li><strong><code>Set Strong Password</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Descripción</strong>: Esta política fuerza que las contraseñas de Supervisor y Usuario cumplan con requisitos de complejidad (longitud, mezcla de caracteres, etc.).</li>
-<li><strong>Bastionado</strong>: <strong>Mantener </strong><strong><code>Enabled</code></strong>. Esto es una buena práctica de seguridad.</li>
-</ul>
-</li>
-</ol>
-<p>Negative: <strong>Acción de Bastionado Requerida</strong> El estado actual (<code>Not Set</code>) es inaceptable para un sistema bastionado.</p>
-<ol type="1">
-<li>Seleccione <strong><code>Set Supervisor Password</code></strong>, pulse <code>Enter</code> y establezca una contraseña robusta. Anótela y guárdela en un lugar seguro (gestor de contraseñas). <strong>Esta es la acción más importante de toda la guía.</strong></li>
-<li>(Opcional, pero recomendado) Seleccione <strong><code>User Password</code></strong> y establezca una contraseña de arranque.</li>
-<li>Asegúrese de que <strong><code>Set Strong Password</code></strong> permanece en <strong><code>Enabled</code></strong>.</li>
-</ol>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="La Pestaña Startup (Control de Arranque)" duration="5">
-        <p>Pasamos a la pestaña <code>Startup</code>. Esta sección controla qué dispositivos tienen permiso para iniciar un sistema operativo, convirtiéndose en un punto de control de seguridad crítico.</p>
-<p class="image-container"><img alt="Opciones de Arranque (Startup)" src="img\\51ba9b83c7b6f899.png"></p>
-<p>Analicemos las opciones de arranque de dispositivos:</p>
-<ol type="1">
-<li><strong><code>USB Boot</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Descripción</strong>: Permite que el sistema arranque desde un dispositivo conectado por USB (memoria USB, disco duro externo).</li>
-<li><strong>Bastionado</strong>: Esta es una de las vulnerabilidades físicas más comunes. Estando <code>Enabled</code>, un atacante con acceso físico puede arrancar un sistema operativo &#34;live&#34; (ej. Kali Linux) desde un USB, saltarse la seguridad del SO instalado y acceder o modificar los datos del disco.</li>
-</ul>
-</li>
-<li><strong><code>PXE Boot to LAN</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Descripción</strong>: Permite que el sistema arranque desde la red (Preboot Execution Environment). Se usa en entornos corporativos para desplegar imágenes de sistema.</li>
-<li><strong>Bastionado</strong>: Para un servidor o equipo individual bastionado, esto es un vector de ataque de red. Un servidor PXE malicioso en la misma red podría forzar al equipo a arrancar una imagen comprometida.</li>
-</ul>
-</li>
-<li><strong><code>IPV4 PXE First</code></strong>: [Estado Actual: <code>Enabled</code>]<ul>
-<li><strong>Descripción</strong>: Prioriza la versión IPv4 de PXE. Es una sub-opción de la anterior.</li>
-<li><strong>Bastionado</strong>: Irrelevante si se deshabilita <code>PXE Boot to LAN</code>.</li>
-</ul>
-</li>
-</ol>
-<p>Negative: <strong>Acción de Bastionado Requerida</strong> En el estado actual permite múltiples vectores de ataque como acabamos de comentar. Para ello debemos restringir el arranque <em>únicamente</em> al disco duro interno de nuestro sistema operativo.</p>
-<ul>
-<li>Cambiamos <strong><code>USB Boot</code></strong> a <strong><code>Disabled</code></strong>.</li>
-<li>Cambiamos <strong><code>PXE Boot to LAN</code></strong> a <strong><code>Disabled</code></strong>.</li>
-<li>La opción <strong><code>IPV4 PXE First</code></strong> ,Se deshabilitará por completitud si la BIOS lo permite tras la acción anterior, en nuestro caso si fue posible como observamos en la última imágen.</li>
-</ul>
-<p class="image-container"><img alt="Opciones de Arranque (Startup)" src="img\\10027c62b63d5c8.png"></p>
-<p>Una vez hecho este apartado accedemos a la sub-sección en donde encontramos Boot Order</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Sub-sección Startup: Boot Order" duration="3">
-        <p>Ingresamos al sub-menú <code>Boot Order</code>. Esta pantalla es el &#34;director de orquesta&#34; del arranque.</p>
-<p class="image-container"><img alt="Opciones de Orden de Arranque" src="img\\e3dc965f18fe2a48.png"></p>
-<p>Aquí se definen las dos filosofías de arranque que el sistema puede seguir:</p>
-<ol type="1">
-<li><strong><code>UEFI Boot order</code></strong>:<ul>
-<li><strong>Descripción</strong>: El modo de arranque moderno, seguro y estándar actual. Es el único modo que soporta funciones críticas como <code>Secure Boot</code>.</li>
-<li><strong>Bastionado</strong>: Este es el único modo que debemos permitir. Al ingresar aquí (aunque en esta simulación no se muestre), debemos asegurarnos de que la primera y única opción de arranque sea el gestor de arranque del sistema operativo principal (ej. <code>Windows Boot Manager</code> o <code>ubuntu</code>).</li>
-</ul>
-</li>
-<li><strong><code>Legacy Boot Order</code></strong>:<ul>
-<li><strong>Descripción</strong>: El modo de arranque obsoleto. No soporta <code>Secure Boot</code> y es más vulnerable a <em>rootkits</em> de arranque.</li>
-<li><strong>Bastionado</strong>: La presencia de esta opción implica que el modo &#34;Legacy&#34; podría estar activado. Un sistema bastionado debe operar en modo <strong>UEFI exclusivo</strong>.</li>
-</ul>
-</li>
-</ol>
-<p>En este apartado debemos de tener en cuenta lo siguiente:</p>
-<ul>
-<li>El sistema debe estar configurado en <strong>modo UEFI solamente</strong>.</li>
-<li>Se debe <strong>deshabilitar cualquier compatibilidad con &#34;Legacy&#34; o CSM</strong> (Compatibility Support Module) en la BIOS. (Esto suele estar en la pestaña <code>Startup</code> o <code>Boot</code>).</li>
-<li>Dentro del <code>UEFI Boot order</code>, el disco del sistema (<code>NVMe SSD</code>, <code>Windows Boot Manager</code>, <code>ubuntu</code>, etc.) debe ser la <strong>opción número 1</strong>, y el resto de dispositivos (USB, Red) deben estar deshabilitados o eliminados de la lista.</li>
-</ul>
-<p>Una vez finalizado con el apartado de Boot Order finalizamos con Restart</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="La Pestaña Restart: (El Menú de Salida)" duration="2">
-        <p>Hemos alcanzado la última pestaña, <code>Restart</code>. Esta sección es el &#34;mostrador de salida&#34; de la BIOS; aquí no se configura nada, pero se ejecutan las acciones finales.</p>
-<p class="image-container"><img alt="Opciones de Reinicio" src="img\\cfeb4216150065aa.png"></p>
-<p>Es fundamental comprender qué hace cada opción antes de seleccionarla:</p>
-<ol type="1">
-<li><strong><code>Exit Saving Changes</code></strong>:<ul>
-<li><strong>Descripción</strong>: Esta es la opción estándar para <strong>guardar y salir</strong> (comúnmente pulsando <code>F10</code>). Al seleccionarla, todos los cambios de bastionado que hemos configurado (<code>Disabled</code> en USB, <code>Disabled</code> en WakeOnLAN, etc.) se escribirán en la memoria (NVRAM) y el sistema se reiniciará con las nuevas políticas aplicadas.</li>
-</ul>
-</li>
-<li><strong><code>Exit Discarding Changes</code></strong>:<ul>
-<li><strong>Descripción</strong>: La &#34;salida de emergencia&#34;. Esta opción reinicia el sistema <strong>ignorando</strong> todos los cambios que hemos hecho en esta sesión. Es útil si hemos cometido un error y no estamos seguros de qué hemos modificado.</li>
-</ul>
-</li>
-<li><strong><code>Load Factory Defaults</code></strong>:<ul>
-<li><strong>Descripción</strong>: Revierte <em>toda</em> la configuración de la BIOS a su estado de fábrica.</li>
-<li><strong>Bastionado</strong>: Esta es una opción de riesgo. Un atacante con acceso físico podría usarla para borrar todo nuestro bastionado. Esta es la razón principal por la que establecer una <strong><code>Supervisor Password</code></strong> (en la pestaña <code>Security</code>) es tan crítico: bloquea el acceso a esta y otras funciones.</li>
-</ul>
-</li>
-</ol>
-<p>Positive: <strong>Paso de Confirmación</strong> No es un paso de bastionado en sí mismo, sino el paso de <strong>confirmación</strong>. Una vez que hayamos completado todas las configuraciones (incluyendo la pestaña <code>Security</code>), volveremos aquí y seleccionaremos <strong><code>Exit Saving Changes</code></strong> para aplicar nuestro trabajo.</p>
+<p>Estas configuraciones incrementan drásticamente la seguridad del dispositivo y su contenido, minimizando las probabilidades de exposición a ataques a nivel de firmware.</p>
 
 
       </google-codelab-step>

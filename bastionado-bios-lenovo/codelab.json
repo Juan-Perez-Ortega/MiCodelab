@@ -3,29 +3,26 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2025-11-06T10:29:54+01:00",
+  "updated": "2025-11-11T14:29:46+01:00",
   "id": "bastionado-bios-lenovo",
-  "duration": 43,
-  "title": "BIOS/UEFI de un dispositvo lenovo",
+  "duration": 6,
+  "title": "Guía de Bastionado de BIOS/UEFI: Lenovo",
   "authors": "Juan Pérez Ortega",
-  "summary": "Guía paso a paso para el bastionado de seguridad de la BIOS/UEFI en portátiles Lenovo.",
+  "summary": "Guía paso a paso para el bastionado (hardening) de la BIOS/UEFI de un Lenovo 13w Gen 3, basada en la rúbrica del Criterio 6a.",
   "source": "codelab.md",
   "theme": "",
   "status": [
     "published"
   ],
   "category": [
-    "ciberseguridad",
-    "hardening",
+    "codelab",
+    "security",
     "bios",
     "uefi"
   ],
   "tags": [
-    "bios",
-    "firmware",
-    "lenovo",
-    "seguridad",
-    "uefi"
+    "web"
   ],
+  "feedback": "jperrot689@g.educaand.es",
   "url": "bastionado-bios-lenovo"
 }
